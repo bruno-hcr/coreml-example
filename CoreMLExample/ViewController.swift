@@ -10,9 +10,9 @@ import UIKit
 import AVKit
 import Vision
 
-class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
+class ViewController: UIViewController {
     
-    let identifierLabel: UILabel = {
+    lazy var identifierLabel: UILabel = {
         let label = UILabel()
         label.backgroundColor = .white
         label.textAlignment = .center
@@ -22,6 +22,11 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupCameraLayer()
+        setupIdentifierConfidenceLabel()
+    }
+    
+    private func setupCameraLayer() {
         let captureSession = AVCaptureSession()
         captureSession.sessionPreset = .photo
         
@@ -38,18 +43,18 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         let dataOutput = AVCaptureVideoDataOutput()
         dataOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "videoQueue"))
         captureSession.addOutput(dataOutput)
-        
-        setupIdentifierConfidenceLabel()
     }
     
-    fileprivate func setupIdentifierConfidenceLabel() {
+    private func setupIdentifierConfidenceLabel() {
         view.addSubview(identifierLabel)
         identifierLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -32).isActive = true
         identifierLabel.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         identifierLabel.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         identifierLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
     }
-    
+}
+
+extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         guard let model = try? VNCoreMLModel(for: Resnet50().model) else { return }
