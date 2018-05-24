@@ -17,5 +17,6 @@ Para rodar o projeto é simples.
 
 
 ## Referência
+* [Core ML](https://developer.apple.com/documentation/coreml)
 * [Welcoming Core ML](https://medium.com/towards-data-science/welcoming-core-ml-8ba325227a28)
-* [Integrating a Core ML Model into Your App](https://developer.apple.com/documentation/coreml/integrating_a_core_ml_model_into_your_app])
+
